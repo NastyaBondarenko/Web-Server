@@ -19,7 +19,7 @@ public class RequestHandlerTest {
     private BufferedReader bufferedReader;
     private RequestHandler requestHandler;
     private BufferedOutputStream mockOutputStream;
-    private final String path = "src/test/resources/webapp/index.html";
+    private final String webAppPath = "src/test/resources/webapp";
     private Response response;
     private String requestLine;
 
@@ -33,7 +33,7 @@ public class RequestHandlerTest {
     public void testHandleRequest_throwBadRequest_whenRequestLineIsEmpty() throws IOException {
         requestLine = "";
         bufferedReader = new BufferedReader(new CharArrayReader(requestLine.toCharArray()));
-        requestHandler = new RequestHandler(bufferedReader, mockOutputStream, path);
+        requestHandler = new RequestHandler(bufferedReader, mockOutputStream, webAppPath);
         response = requestHandler.handle();
 
         HttpStatus actualHttpStatus = response.getHttpStatus();
@@ -47,7 +47,7 @@ public class RequestHandlerTest {
     public void testHandleRequest_throwNotFound_whenUriIsNotExist() throws IOException {
         requestLine = "GET /index123.html HTTP/1.1";
         bufferedReader = new BufferedReader(new CharArrayReader(requestLine.toCharArray()));
-        requestHandler = new RequestHandler(bufferedReader, mockOutputStream, path);
+        requestHandler = new RequestHandler(bufferedReader, mockOutputStream, webAppPath);
         response = requestHandler.handle();
 
         HttpStatus actualHttpStatus = response.getHttpStatus();
@@ -61,7 +61,7 @@ public class RequestHandlerTest {
     public void testHandleRequest_throwMethodNotAllowed_whenRequestLine_containsIncorrectHttpMethod() throws IOException {
         requestLine = "IncorrectMethod /index.html HTTP/1.1";
         bufferedReader = new BufferedReader(new CharArrayReader(requestLine.toCharArray()));
-        requestHandler = new RequestHandler(bufferedReader, mockOutputStream, path);
+        requestHandler = new RequestHandler(bufferedReader, mockOutputStream, webAppPath);
         response = requestHandler.handle();
 
         HttpStatus actualHttpStatus = response.getHttpStatus();
@@ -75,11 +75,11 @@ public class RequestHandlerTest {
     public void testHandleRequest_throwMethodNotAllowed_whenHttpMethodIsPost() throws IOException {
         requestLine = "POST /index.html HTTP/1.1";
         bufferedReader = new BufferedReader(new CharArrayReader(requestLine.toCharArray()));
-        requestHandler = new RequestHandler(bufferedReader, mockOutputStream, path);
+        requestHandler = new RequestHandler(bufferedReader, mockOutputStream, webAppPath);
         response = requestHandler.handle();
 
         HttpStatus actualHttpStatus = response.getHttpStatus();
-        HttpStatus expectedHttpStatus = HttpStatus.NOT_FOUND;
+        HttpStatus expectedHttpStatus = HttpStatus.BAD_REQUEST;
 
         assertEquals(expectedHttpStatus, actualHttpStatus);
     }
