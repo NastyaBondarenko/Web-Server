@@ -1,5 +1,4 @@
 package com.bondarenko.webserver;
-
 import com.bondarenko.webserver.server.Server;
 
 public class StartServer {
