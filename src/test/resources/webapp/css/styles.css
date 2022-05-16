@@ -1,0 +1,39 @@
+body{
+background-image: url(https://cdn.crello.com/api/media/medium/285640198/stock-photo-empty-golden-frames-white-background?token=);
+}
+
+#main_block{
+  width: 1300px;
+  margin: 0 auto;
+ background-image: url(https://habrastorage.org/getpro/habr/post_images/a92/f82/66e/a92f8266eb81b12905218bd1e4aeaf17.jpg);
+}
+
+#header{
+  height: 350px;
+}
+.marcer{
+  float: left;
+  margin: 5px 5px 0 0;
+}
+
+#main_content{
+  width: 800px;
+  padding: 10px;
+  background: #ffffff;
+  margin: 0 auto;
+}
+
+#footer{
+  height:80px;
+  background-image: url(https://p4.wallpaperbetter.com/wallpaper/585/526/393/minimalism-empty-gradient-simple-background-wallpaper-preview.jpg);
+  margin-bottom: 10px;
+  border-radius: 5px;
+}
+
+.mail{
+  float:left;
+ margin:20px 0 0 60px;
+}
+.clear{
+  clear: both;
+}
