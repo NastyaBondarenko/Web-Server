@@ -2,7 +2,7 @@ package com.bondarenko.webserver;
 
 import com.bondarenko.webserver.server.Server;
 
-public class StartServer {
+public class Starter {
     private static final String WEB_APP_PATH = "src/test/resources/webapp";
     private static final int PORT = 3000;
 
