@@ -30,7 +30,11 @@ public class RequestReader {
     public static void injectUriAndMethod(Request request, String requestLine) {
         String[] strings = requestLine.split(" ");
         try {
-            request.setHttpMethod(HttpMethod.valueOf(strings[0]));
+            HttpMethod httpMethod = HttpMethod.valueOf(strings[0]);
+            if (httpMethod == HttpMethod.POST) {
+                throw new ServerException(HttpStatus.BAD_REQUEST);
+            }
+            request.setHttpMethod(httpMethod);
             request.setUri(strings[1]);
 
         } catch (IllegalArgumentException ex) {
@@ -53,7 +57,7 @@ public class RequestReader {
             }
             request.setHeaders(headersMap);
         } catch (IOException ex) {
-            System.out.println("InjectHeaders: " + ex.getMessage());//delete
+            System.out.println("InjectHeaders: " + ex.getMessage());
             ex.printStackTrace();
             throw new IOException();
         }
