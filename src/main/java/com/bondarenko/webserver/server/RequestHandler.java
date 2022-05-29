@@ -8,46 +8,32 @@ import com.bondarenko.webserver.util.ResponseWriter;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 
 import static com.bondarenko.webserver.io.ResourceReader.readContent;
 import static com.bondarenko.webserver.util.RequestReader.parseRequest;
 
 public class RequestHandler {
-    private final BufferedReader reader;
-    private final BufferedOutputStream output;
+    private final BufferedReader socketReader;
+    private final BufferedOutputStream socketOutputStream;
     private final String webAppPath;
 
-    public RequestHandler(BufferedReader reader, BufferedOutputStream output, String webAppPath) {
-        if (reader == null || output == null || webAppPath == null) {
-            throw new NullPointerException("Reader, writer or webAppPath, - can not be null");
-        }
-        this.reader = reader;
-        this.output = output;
+    public RequestHandler(BufferedReader socketReader, BufferedOutputStream socketOutputStream, String webAppPath) {
+        this.socketReader = socketReader;
+        this.socketOutputStream = socketOutputStream;
         this.webAppPath = webAppPath;
     }
 
-    public Response handle() throws IOException {
-        ResponseWriter responseWriter = new ResponseWriter(output);
+    public Response handle() {
+        ResponseWriter responseWriter = new ResponseWriter(socketOutputStream);
         Response response = new Response();
         try {
-            Request request = parseRequest(reader);
+            Request request = parseRequest(socketReader);
             byte[] content = readContent(webAppPath, request.getUri());
             responseWriter.writeResponse(HttpStatus.OK, content);
-        } catch (ServerException exception) {
-            response.setHttpStatus(exception.getHttpStatus());
-        } catch (IllegalArgumentException exception) {
-            exception.printStackTrace();
-            response.setHttpStatus(HttpStatus.METHOD_NOT_ALLOWED);
-        } catch (RuntimeException exception) {
-            response.setHttpStatus(HttpStatus.BAD_REQUEST);
-        } catch (FileNotFoundException exception) {
-            response.setHttpStatus(HttpStatus.NOT_FOUND);
-        } catch (IOException exception) {
-            response.setHttpStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (ServerException e) {
+            response.setHttpStatus(e.getHttpStatus());
+            e.printStackTrace();
         }
         return response;
     }
 }
-
