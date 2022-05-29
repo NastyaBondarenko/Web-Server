@@ -2,11 +2,52 @@ package com.bondarenko.webserver.response;
 
 import com.bondarenko.webserver.exception.ServerException;
 import com.bondarenko.webserver.io.ResourceReader;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ResourceReaderTest {
+
+    private final ResourceReader resourceReader = new ResourceReader();
+
+    private final String expectedContent = """
+            The World Bank also supports large-scale sustainable forest and land use programs, such as the Forest Carbon
+            Partnership Facility and the BioCarbon Fund Initiative for Sustainable Forest Landscapes.
+            Healthy forests provide critical ecosystem services important to nature, people and economies, 
+            including the provision of drinking water, water and climate cycle regulation.""";
+
+    @BeforeEach
+    public void init() throws IOException {
+        File dir = new File("src/test/resources/webapp/test");
+        File file = new File("src/test/resources/webapp/test/file.txt");
+        dir.mkdir();
+        file.createNewFile();
+
+        OutputStream outputStream = new FileOutputStream(file);
+        byte[] content = expectedContent.getBytes();
+        outputStream.write(content);
+        outputStream.close();
+    }
+
+    @AfterEach
+    public void clean() {
+        File dir = new File("src/test/resources/webapp/test");
+        File file = new File("src/test/resources/webapp/test/file.txt");
+        file.delete();
+        dir.delete();
+    }
+
+    @Test
+    @DisplayName("when Read Content than String Of Content Is Returned")
+    public void whenReadContent_thanStringOfContent_IsReturned() {
+        String actualContent = new String(resourceReader.readContent("src/test/resources/webapp/test/", "file.txt"));
+        assertEquals(expectedContent, actualContent);
+    }
 
     @Test
     @DisplayName("when Read Content with Empty Web App Path And Uri than Null Pointer Exception Thrown")
@@ -26,20 +67,5 @@ public class ResourceReaderTest {
     public void whenReadContent_withNotExistingWebAppPath_thanServerException_Thrown() {
         Assertions.assertThrows(ServerException.class, () ->
                 ResourceReader.readContent("src/main/resource_/", "test.txt"));
-    }
-
-    @Test
-    @DisplayName("when Read Content than Array Of Bytes Is Returned")
-    public void whenReadContent_thanArrayOfBytes_IsReturned() {
-        ResourceReader resourceReader = new ResourceReader();
-        byte[] actualContent = resourceReader.readContent("src/test/resources/test/", "test.txt");
-
-        Assertions.assertEquals('F', (char) actualContent[0]);
-        Assertions.assertEquals('o', (char) actualContent[1]);
-        Assertions.assertEquals('r', (char) actualContent[2]);
-        Assertions.assertEquals('e', (char) actualContent[3]);
-        Assertions.assertEquals('s', (char) actualContent[4]);
-        Assertions.assertEquals('t', (char) actualContent[5]);
-        Assertions.assertEquals(6, (char) actualContent.length);
     }
 }
