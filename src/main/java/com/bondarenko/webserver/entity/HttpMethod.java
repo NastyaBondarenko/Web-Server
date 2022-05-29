@@ -15,13 +15,22 @@ public enum HttpMethod {
     CONNECT("CONNECT");
 
     private String uri;
-    private final String httpMethod;
+    private final String methodName;
 
-    HttpMethod(String httpMethod) {
-        this.httpMethod = httpMethod;
+    HttpMethod(String methodName) {
+        this.methodName = methodName;
     }
 
-    public String requestLine() {// Request to Server:
-        return httpMethod + "/" + uri + "HTTP/1.1";
+    public String getMethodName() {
+        return methodName;
+    }
+
+    public static HttpMethod getMethod(String methodName) {
+        for (HttpMethod value : values()) {
+            if (value.getMethodName().equals(methodName)) {
+                return value;
+            }
+        }
+        throw new IllegalArgumentException("Not http method : " + methodName);
     }
 }
