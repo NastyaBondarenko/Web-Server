@@ -15,9 +15,7 @@ public class ResourceReader {
             return Files.readAllBytes(file.toPath());
 
         } catch (IOException ex) {
-            System.out.println("ReadContent method. File code not be found by the path: " + ex.getMessage());
-            ex.printStackTrace();
-            throw new ServerException(HttpStatus.NOT_FOUND);
+            throw new ServerException(ex, HttpStatus.NOT_FOUND);
         }
     }
 }
