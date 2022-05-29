@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 
 import java.io.BufferedReader;
 import java.io.CharArrayReader;
-import java.io.IOException;
 import java.util.Map;
 
 import static com.bondarenko.webserver.util.RequestReader.injectHeaders;
@@ -21,7 +20,7 @@ public class RequestReaderTest {
 
     @Test
     @DisplayName("test Inject Headers")
-    public void testInjectHeaders() throws IOException {
+    public void testInjectHeaders() {
         String headers = """
                 Host: net.tutsplus.com
                 User-Agent: Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.5) Gecko/20091102 Firefox/3.5.5 (.NET CLR 3.5.30729)
@@ -48,7 +47,7 @@ public class RequestReaderTest {
 
     @Test
     @DisplayName("test Inject Headers when Map With Headers is Empty")
-    public void testInjectHeaders_whenMapWithHeaders_isEmpty() throws IOException {
+    public void testInjectHeaders_whenMapWithHeaders_isEmpty() {
         String headers = "";
 
         injectHeaders(new BufferedReader(new CharArrayReader(headers.toCharArray())), request);
