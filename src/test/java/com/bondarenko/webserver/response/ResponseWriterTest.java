@@ -32,7 +32,7 @@ public class ResponseWriterTest {
 
     @Test
     @DisplayName("test ResponseWriter when Http Status Is Ok")
-    public void testResponseWriter_whenHttpStatusIsOk() throws IOException {
+    public void testResponseWriter_whenHttpStatusIsOk() {
         responseWriter.writeResponse(HttpStatus.OK, "Hello".getBytes());
         StringBuilder stringBuilder = new StringBuilder();
         byte[] array = byteArrayOutputStream.toByteArray();
@@ -40,7 +40,6 @@ public class ResponseWriterTest {
             stringBuilder.append((char) b);
         }
         String actual = stringBuilder.toString();
-
         String expected = """
                 HTTP/1.1 200 OK\r
                 \r
@@ -51,7 +50,7 @@ public class ResponseWriterTest {
 
     @Test
     @DisplayName("test Response Writer when Http Status Is Bad Request")
-    public void testResponseWriter_whenHttpStatusIs_BadRequest() throws IOException {
+    public void testResponseWriter_whenHttpStatusIs_BadRequest() {
         String line = "";
         responseWriter.writeResponse(HttpStatus.BAD_REQUEST, line.getBytes());
 
