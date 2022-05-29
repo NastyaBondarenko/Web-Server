@@ -18,33 +18,23 @@ public class RequestReader {
             injectUriAndMethod(request, line);
             injectHeaders(reader, request);
             return request;
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-            throw new ServerException(HttpStatus.METHOD_NOT_ALLOWED);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new ServerException(HttpStatus.BAD_REQUEST);
+        } catch (IOException e) {
+            throw new ServerException(e, HttpStatus.BAD_REQUEST);
         }
     }
 
     public static void injectUriAndMethod(Request request, String requestLine) {
-        String[] strings = requestLine.split(" ");
-        try {
-            HttpMethod httpMethod = HttpMethod.valueOf(strings[0]);
-            if (httpMethod == HttpMethod.POST) {
-                throw new ServerException(HttpStatus.BAD_REQUEST);
-            }
-            request.setHttpMethod(httpMethod);
-            request.setUri(strings[1]);
-
-        } catch (IllegalArgumentException ex) {
-            System.out.println("InjectUriMethod: " + ex.getMessage());
-            ex.printStackTrace();
-            throw new IllegalArgumentException();
+        String[] requestStartLine = requestLine.split(" ");
+        HttpMethod requestHttpMethod = HttpMethod.valueOf(requestStartLine[0]);
+        HttpMethod httpMethod = HttpMethod.getMethod(String.valueOf(requestHttpMethod));
+        if (httpMethod != HttpMethod.GET) {
+            throw new ServerException(HttpStatus.METHOD_NOT_ALLOWED);
         }
+        request.setHttpMethod(requestHttpMethod);
+        request.setUri(requestStartLine[1]);
     }
 
-    public static void injectHeaders(BufferedReader reader, Request request) throws IOException {
+    public static void injectHeaders(BufferedReader reader, Request request) {
         try {
             Map<String, String> headersMap = new HashMap<>();
             String line;
@@ -56,10 +46,8 @@ public class RequestReader {
                 headersMap.put(strings[0], strings[1]);
             }
             request.setHeaders(headersMap);
-        } catch (IOException ex) {
-            System.out.println("InjectHeaders: " + ex.getMessage());
-            ex.printStackTrace();
-            throw new IOException();
+        } catch (Exception ex) {
+            throw new ServerException(HttpStatus.BAD_REQUEST);
         }
     }
 }
