@@ -10,7 +10,7 @@ import java.util.Objects;
 
 public class Server {
     private static final int DEFAULT_PORT = 3000;
-    private static final String DEFAULT_PATH = Objects.requireNonNull(Server.class.getClassLoader().getResource("")).getPath();
+    private static final String DEFAULT_SUBPATH = Objects.requireNonNull(Server.class.getClassLoader().getResource("")).getPath();
     private int port;
     private String path;
 
@@ -37,7 +37,7 @@ public class Server {
     }
 
     public void setWebAppPath(String webAppPath) {
-        path = DEFAULT_PATH + webAppPath;
+        path = DEFAULT_SUBPATH + webAppPath;
     }
 
     public void start() throws IOException {
