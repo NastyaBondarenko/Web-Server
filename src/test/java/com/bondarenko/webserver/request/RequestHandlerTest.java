@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.CharArrayReader;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -19,7 +20,7 @@ public class RequestHandlerTest {
     private BufferedReader socketReader;
     private RequestHandler requestHandler;
     private BufferedOutputStream mockOutputStream;
-    private final String webAppPath = "src/test/resources/webapp";
+    private final String webAppPath = Objects.requireNonNull(RequestHandlerTest.class.getClassLoader().getResource("")).getPath();
     private Response response;
     private String requestLine;
 
