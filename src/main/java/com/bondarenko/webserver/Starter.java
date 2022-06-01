@@ -9,7 +9,6 @@ public class Starter {
         Server server = new Server();
         server.setPort(3000);
         server.setWebAppPath("webapp");
-        System.out.println(server.setWebAppPath("webapp"));
 
         server.start();
     }
