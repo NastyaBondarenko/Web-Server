@@ -20,13 +20,6 @@ public class ServerTest {
         Assertions.assertThrows(IllegalArgumentException.class, () ->
                 server.setPort(-2000));
     }
-
-    @Test
-    @DisplayName("test Set Web App Path when Web App Path Is Null than throw Null Pointer Exception")
-    public void testSetWebAppPath_whenWebAppPathIsNull_thanThrowNullPointerException() {
-        Assertions.assertThrows(NullPointerException.class, () ->
-                server.setWebAppPath(null));
-    }
 }
 
 
