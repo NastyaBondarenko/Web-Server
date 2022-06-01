@@ -8,65 +8,71 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Server {
-    private int port;
-    private String webAppPath;
+    private static final int DEFAULT_PORT = 3000;
+    private static final String DEFAULT_PATH = "src/main/resources/";
+//    private static final String DEFAULT_PATH = Objects.requireNonNull(Server.class.getClassLoader().getResource("")).getPath();
 
-    public Server(int port, String webAppPath) {
-        ensureValueOfPortIsInAcceptableLimits(port);
-        ensureWebAppPathIsNotNull(webAppPath);
-        this.port = port;
-        this.webAppPath = webAppPath;
-    }
+    private int port;
+    private String path;
 
     public Server() {
-        this.port = port;
+        this(DEFAULT_PORT);
+    }
+
+    public Server(int port) {
+        validatePort(this.port = port);
+    }
+
+    public Server(String webAppPath) {
+        this(DEFAULT_PORT, webAppPath);
+    }
+
+    public Server(int port, String webAppPath) {
+        this(port);
+        setWebAppPath(webAppPath);
     }
 
     public void setPort(int port) {
-        ensureValueOfPortIsInAcceptableLimits(port);
+        validatePort(port);
         this.port = port;
-
     }
 
-    public void setWebAppPath(String webAppPath) {
-        ensureWebAppPathIsNotNull(webAppPath);
-        this.webAppPath = webAppPath;
+    public String setWebAppPath(String webAppPath) {
+        path = DEFAULT_PATH + webAppPath;
+        validate(path);
+        return path;
     }
 
-    public void start() {
+    public void start() throws IOException {
         try (ServerSocket serverSocket = new ServerSocket(port)) {
             while (true) {
                 try (Socket socket = serverSocket.accept()) {
-                    try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                         BufferedOutputStream outputStream = new BufferedOutputStream(socket.getOutputStream())) {
+                    try (BufferedReader socketBufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                         BufferedOutputStream socketOutputStream = new BufferedOutputStream(socket.getOutputStream())) {
 
-                        RequestHandler requestHandler = new RequestHandler(bufferedReader, outputStream, webAppPath);
+                        RequestHandler requestHandler = new RequestHandler(socketBufferedReader, socketOutputStream, path);
                         requestHandler.handle();
-
-                    } catch (IOException exception) {
-                        exception.printStackTrace();
                     }
-                } catch (IOException exception) {
-                    exception.printStackTrace();
                 }
             }
-        } catch (IOException exception) {
-            exception.printStackTrace();
         }
     }
 
-    private void ensureValueOfPortIsInAcceptableLimits(int port) {
+    private void validatePort(int port) {
         if (port > 65535 || port < 0) {
             throw new IllegalArgumentException("Value of port have to be between [0,65535]");
         }
     }
-    private void ensureWebAppPathIsNotNull(String webAppPath) {
-        if (webAppPath==null) {
+
+    private void validate(String webAppPath) {
+        if (webAppPath == null) {
             throw new NullPointerException("WebAppPath can not be null");
         }
     }
-
 }
+
+
+
 
 
 
