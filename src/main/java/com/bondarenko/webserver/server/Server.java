@@ -6,12 +6,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Objects;
 
 public class Server {
     private static final int DEFAULT_PORT = 3000;
-    private static final String DEFAULT_PATH = "src/main/resources/";
-//    private static final String DEFAULT_PATH = Objects.requireNonNull(Server.class.getClassLoader().getResource("")).getPath();
-
+    private static final String DEFAULT_PATH = Objects.requireNonNull(Server.class.getClassLoader().getResource("")).getPath();
     private int port;
     private String path;
 
@@ -37,20 +36,18 @@ public class Server {
         this.port = port;
     }
 
-    public String setWebAppPath(String webAppPath) {
+    public void setWebAppPath(String webAppPath) {
         path = DEFAULT_PATH + webAppPath;
-        validate(path);
-        return path;
     }
 
     public void start() throws IOException {
         try (ServerSocket serverSocket = new ServerSocket(port)) {
             while (true) {
                 try (Socket socket = serverSocket.accept()) {
-                    try (BufferedReader socketBufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                    try (BufferedReader socketReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                          BufferedOutputStream socketOutputStream = new BufferedOutputStream(socket.getOutputStream())) {
 
-                        RequestHandler requestHandler = new RequestHandler(socketBufferedReader, socketOutputStream, path);
+                        RequestHandler requestHandler = new RequestHandler(socketReader, socketOutputStream, path);
                         requestHandler.handle();
                     }
                 }
@@ -61,12 +58,6 @@ public class Server {
     private void validatePort(int port) {
         if (port > 65535 || port < 0) {
             throw new IllegalArgumentException("Value of port have to be between [0,65535]");
-        }
-    }
-
-    private void validate(String webAppPath) {
-        if (webAppPath == null) {
-            throw new NullPointerException("WebAppPath can not be null");
         }
     }
 }
