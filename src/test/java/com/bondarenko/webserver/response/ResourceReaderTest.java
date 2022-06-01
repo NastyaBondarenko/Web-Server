@@ -2,16 +2,19 @@ package com.bondarenko.webserver.response;
 
 import com.bondarenko.webserver.exception.ServerException;
 import com.bondarenko.webserver.io.ResourceReader;
+import com.bondarenko.webserver.server.Server;
 import org.junit.jupiter.api.*;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ResourceReaderTest {
+    private String path = Objects.requireNonNull(ResourceReaderTest.class.getClassLoader().getResource("")).getPath() + "test";
 
     private final ResourceReader resourceReader = new ResourceReader();
 
@@ -23,8 +26,9 @@ public class ResourceReaderTest {
 
     @BeforeEach
     public void init() throws IOException {
-        File dir = new File("src/test/resources/webapp/test");
-        File file = new File("src/test/resources/webapp/test/file.txt");
+        String path = Objects.requireNonNull(ResourceReaderTest.class.getClassLoader().getResource("")).getPath() + "test";
+        File dir = new File(path);
+        File file = new File(path + "/file.txt");
         dir.mkdir();
         file.createNewFile();
 
@@ -36,8 +40,9 @@ public class ResourceReaderTest {
 
     @AfterEach
     public void clean() {
-        File dir = new File("src/test/resources/webapp/test");
-        File file = new File("src/test/resources/webapp/test/file.txt");
+        String path = Objects.requireNonNull(ResourceReaderTest.class.getClassLoader().getResource("")).getPath() + "test";
+        File dir = new File(path);
+        File file = new File(path + "/file.txt");
         file.delete();
         dir.delete();
     }
@@ -45,7 +50,7 @@ public class ResourceReaderTest {
     @Test
     @DisplayName("when Read Content than String Of Content Is Returned")
     public void whenReadContent_thanStringOfContent_IsReturned() {
-        String actualContent = new String(resourceReader.readContent("src/test/resources/webapp/test/", "file.txt"));
+        String actualContent = new String(resourceReader.readContent(path, "/file.txt"));
         assertEquals(expectedContent, actualContent);
     }
 
@@ -59,13 +64,13 @@ public class ResourceReaderTest {
     @DisplayName("when Read Content with Not Existing Uri than Server Exception Thrown")
     public void whenReadContent_withNotExistingUri_thanServerException_Thrown() {
         Assertions.assertThrows(ServerException.class, () ->
-                ResourceReader.readContent("src/main/resources/", "----.txt"));
+                ResourceReader.readContent("path", "----.txt"));
     }
 
     @Test
     @DisplayName("when Read Content with Not Existing WebAppPath than Server Exception Thrown")
     public void whenReadContent_withNotExistingWebAppPath_thanServerException_Thrown() {
         Assertions.assertThrows(ServerException.class, () ->
-                ResourceReader.readContent("src/main/resource_/", "test.txt"));
+                ResourceReader.readContent(path="_/", "test.txt"));
     }
 }
