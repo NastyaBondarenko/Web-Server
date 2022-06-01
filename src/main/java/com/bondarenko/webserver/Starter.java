@@ -2,12 +2,14 @@ package com.bondarenko.webserver;
 
 import com.bondarenko.webserver.server.Server;
 
-public class Starter {
-    private static final String WEB_APP_PATH = "src/test/resources/webapp";
-    private static final int PORT = 3000;
+import java.io.IOException;
 
-    public static void main(String[] args) {
-        Server server = new Server(PORT, WEB_APP_PATH);
+public class Starter {
+    public static void main(String[] args) throws IOException {
+        Server server = new Server();
+        server.setPort(3000);
+        server.setWebAppPath("webapp");
+        System.out.println(server.setWebAppPath("webapp"));
 
         server.start();
     }
