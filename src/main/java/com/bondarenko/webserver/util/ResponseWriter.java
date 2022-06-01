@@ -16,14 +16,13 @@ public class ResponseWriter {
     }
 
     public void writeResponse(HttpStatus httpStatus, byte[] body) {
-        try {
+        try (socketOutputStream) {
             socketOutputStream.write(httpStatus.getStatusLine().getBytes());
             socketOutputStream.write(LINE_END);
             if (Objects.equals(httpStatus, HttpStatus.OK)) {
                 socketOutputStream.write(LINE_END);
                 socketOutputStream.write(body);
             }
-            socketOutputStream.flush();
         } catch (IOException ex) {
             throw new ServerException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
