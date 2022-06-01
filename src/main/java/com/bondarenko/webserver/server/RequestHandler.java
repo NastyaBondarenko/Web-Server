@@ -32,7 +32,7 @@ public class RequestHandler {
             responseWriter.writeResponse(HttpStatus.OK, content);
         } catch (ServerException e) {
             response.setHttpStatus(e.getHttpStatus());
-            e.printStackTrace();
+            responseWriter.writeResponse(e.getHttpStatus(), null);
         }
         return response;
     }
