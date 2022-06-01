@@ -14,7 +14,6 @@ public enum HttpMethod {
     PATCH("PATCH"),
     CONNECT("CONNECT");
 
-    private String uri;
     private final String methodName;
 
     HttpMethod(String methodName) {
